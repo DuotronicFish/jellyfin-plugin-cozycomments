@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.1.0
+
+- Fixed: after upgrading from Lagtime Comments / Jellyfin Comments, browser tabs that were open during the upgrade
+  showed "Could not load comments: Request failed (404)" on the comments page until reloaded. The plugin now also
+  answers on the old `/JellyfinComments` address, so those tabs keep working.
+- Fixed: the comments page could close by itself right after opening when the plugin's settings changed (for
+  example after an upgrade or when an admin saved the settings). It now stays open unless the page is turned off.
+- Errors now say what went wrong and how to fix it, with **Try again** / **Reload page** buttons, instead of
+  "Request failed (404)".
+- Open pages notice when a newer version is installed on the server and offer a **Reload** button.
+- The comments page being turned off now answers 403 with an explanation instead of 404.
+
 ## 1.2.0.0
 
 - Renamed to **Cozy Comments** (assembly `Jellyfin.Plugin.CozyComments`, API under `/CozyComments`). The plugin GUID is

@@ -15,6 +15,8 @@
     var scanQueued = false;
     var overlay = null;
     var SETTINGS_TTL = 60000;   // re-read settings at most once a minute
+    // Version of this script, from its ?v= query (the server compares it with the version it serves now).
+    var ASSET_V = (function () { var c = document.currentScript; var m = c && /[?&]v=([0-9a-z]+)/i.exec(c.src || ''); return m ? m[1] : ''; })();
 
     // ---------- small helpers ----------
     function api() { return window.ApiClient; }
@@ -34,16 +36,80 @@
         h.Accept = 'application/json';
         return h;
     }
+    // Every failure becomes an Error whose message says what happened and what to do about it.
+    // err.stale = the plugin isn't answering at this address (updated, restarted or removed): reloading the page helps.
+    function failure(status, serverMsg) {
+        var msg, stale = false;
+        if (serverMsg) {
+            msg = serverMsg;
+        } else if (status === 0) {
+            msg = "Can't reach the Jellyfin server. Check your connection, then try again.";
+        } else if (status === 404 || status === 405) {
+            stale = true;
+            msg = "Cozy Comments isn't answering on this server (HTTP " + status + "). The plugin was probably updated, restarted or removed " +
+                'since this page was opened: reload the page (Ctrl+Shift+R, or close and reopen the app). If it keeps happening, an admin ' +
+                'should check that Cozy Comments shows as Active in Dashboard > Plugins, then restart Jellyfin.';
+        } else if (status === 401) {
+            msg = 'You are not signed in, or your session has expired. Sign out of Jellyfin and sign in again, then retry.';
+        } else if (status >= 500) {
+            msg = 'The server hit an error (HTTP ' + status + '). Try again in a moment. If it keeps happening, an admin can look in ' +
+                'Dashboard > Logs for lines starting with [Cozy Comments].';
+        } else {
+            msg = 'Request failed (HTTP ' + status + '). Reload the page and try again.';
+        }
+        var err = new Error(msg);
+        err.status = status;
+        err.stale = stale;
+        return err;
+    }
     function call(method, path, body, query) {
         var url = api().getUrl('CozyComments/' + path, query || undefined);
         return fetch(url, { method: method, headers: headers(body !== undefined), body: body !== undefined ? JSON.stringify(body) : undefined, credentials: 'same-origin' })
             .then(function (r) {
                 if (r.status === 204) { return null; }
-                return r.json().catch(function () { return {}; }).then(function (j) {
-                    if (!r.ok) { var err = new Error((j && j.error) || ('Request failed (' + r.status + ')')); err.status = r.status; throw err; }
-                    return j;
+                return r.json().catch(function () { return null; }).then(function (j) {
+                    if (!r.ok) { throw failure(r.status, j && j.error); }
+                    return j || {};
                 });
-            });
+            }, function () { throw failure(0); });
+    }
+    // An error box with the full explanation and buttons to retry and/or reload the page.
+    function errorBox(title, e, retry) {
+        var box = el('div', 'jfc-error');
+        box.setAttribute('role', 'alert');
+        box.appendChild(el('div', 'jfc-error-title', title));
+        box.appendChild(el('div', 'jfc-error-text', (e && e.message) || 'Something went wrong.'));
+        var row = el('div', 'jfc-error-actions');
+        if (retry && !(e && e.stale)) {
+            var again = el('button', 'jfc-btn', 'Try again');
+            again.type = 'button';
+            again.addEventListener('click', function () { box.remove(); retry(); });
+            row.appendChild(again);
+        }
+        if (!e || e.stale || e.status === 0 || e.status >= 500) {
+            var reload = el('button', 'jfc-btn', 'Reload page');
+            reload.type = 'button';
+            reload.addEventListener('click', function () { location.reload(); });
+            row.appendChild(reload);
+        }
+        if (row.firstChild) { box.appendChild(row); }
+        return box;
+    }
+    // Shown once when the server has a newer version of this add-on than the one running in this tab.
+    function showUpdateNotice() {
+        if (document.querySelector('.jfc-update')) { return; }
+        var bar = el('div', 'jfc-update');
+        bar.setAttribute('role', 'status');
+        bar.appendChild(el('span', '', 'Cozy Comments was updated on the server. Reload to use the new version.'));
+        var reload = el('button', 'jfc-btn', 'Reload');
+        reload.type = 'button';
+        reload.addEventListener('click', function () { location.reload(); });
+        var later = el('button', 'jfc-btn jfc-btn-flat', 'Later');
+        later.type = 'button';
+        later.addEventListener('click', function () { bar.remove(); });
+        bar.appendChild(reload);
+        bar.appendChild(later);
+        document.body.appendChild(bar);
     }
     function hashParams() {
         var h = location.hash || '';
@@ -76,6 +142,7 @@
         settingsPromise = call('GET', 'Settings').then(function (s) {
             var changed = JSON.stringify(s) !== JSON.stringify(S);
             S = s; settingsAt = Date.now(); settingsPromise = null;
+            if (s.clientVersion && ASSET_V && s.clientVersion !== ASSET_V) { showUpdateNotice(); }
             applyTheme();
             if (changed) { refreshRendered(); }
             return S;
@@ -85,7 +152,9 @@
     // Settings changed (or a different user signed in): rebuild what we've drawn.
     function refreshRendered() {
         document.querySelectorAll('.jfc-section, .jfc-homecard').forEach(function (n) { n.remove(); });
-        closeFeed();
+        // Keep an open comments page open (closing it under the reader looks like a bug), unless the page was turned off
+        // or the user changed (S is null then).
+        if (!S || !S.commentsPageEnabled) { closeFeed(); }
     }
     function commentable(type) { return !!S && S.commentableTypes.indexOf(type) >= 0; }
 
@@ -317,7 +386,7 @@
             db.addEventListener('click', function () {
                 var q = (!isReply && c.replies && c.replies.length) ? 'Delete this comment and its ' + c.replies.length + ' repl' + (c.replies.length === 1 ? 'y' : 'ies') + '?' : 'Delete this comment?';
                 if (!window.confirm(q)) { return; }
-                call('DELETE', 'Comments/' + c.id).then(function () { ctx.reload(); }).catch(function (e) { window.alert(e.message); });
+                call('DELETE', 'Comments/' + c.id).then(function () { ctx.reload(); }).catch(function (e) { window.alert("Couldn't delete the comment.\n\n" + e.message); });
             });
             actions.appendChild(db);
         }
@@ -365,7 +434,7 @@
                 cnt.textContent = data.total ? ' · ' + data.total : '';
                 if (!data.comments.length) { list.appendChild(el('div', 'jfc-empty', S.emptyText)); }
                 data.comments.forEach(function (c) { list.appendChild(renderComment(c, ctx, false)); });
-            }).catch(function (e) { list.textContent = ''; list.appendChild(el('div', 'jfc-empty', 'Comments unavailable: ' + e.message)); });
+            }).catch(function (e) { list.textContent = ''; list.appendChild(errorBox("Couldn't load the comments", e, ctx.reload)); });
         };
         ctx.reload();
         return sec;
@@ -597,7 +666,7 @@
                 next += d.items.length;
                 more.hidden = next >= d.totalRecordCount || !d.items.length;
                 more.disabled = false;
-            }).catch(function (e) { list.appendChild(el('div', 'jfc-empty', 'Could not load comments: ' + e.message)); more.disabled = false; });
+            }).catch(function (e) { list.appendChild(errorBox("Couldn't load the comments page", e, load)); more.disabled = false; });
         };
         more.addEventListener('click', load);
         load();

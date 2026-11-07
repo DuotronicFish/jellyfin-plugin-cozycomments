@@ -106,6 +106,10 @@ public sealed class CommentDto
 /// <summary>The subset of the settings the web client needs.</summary>
 public sealed class ClientSettingsDto
 {
+    /// <summary>Gets or sets the version of the web client the server serves now (lets open tabs notice an upgrade).</summary>
+    [JsonPropertyName("clientVersion")]
+    public string ClientVersion { get; set; } = string.Empty;
+
     /// <summary>Gets or sets the comments page title.</summary>
     [JsonPropertyName("pageName")]
     public string PageName { get; set; } = string.Empty;

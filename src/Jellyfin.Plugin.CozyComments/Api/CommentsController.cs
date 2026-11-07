@@ -25,6 +25,9 @@ namespace Jellyfin.Plugin.CozyComments.Api;
 /// <summary>REST API under <c>/CozyComments</c> plus the web client files.</summary>
 [ApiController]
 [Route("CozyComments")]
+// Old address from before the rename (Lagtime Comments / Jellyfin Comments <= 1.1). Browser tabs that were open during
+// the upgrade still run the old add-on, which calls this path; answering here keeps them working until they reload.
+[Route("JellyfinComments")]
 public partial class CommentsController : ControllerBase
 {
     private static readonly ConcurrentDictionary<string, (byte[] Bytes, string ETag)> s_assets = new();
@@ -314,6 +317,10 @@ public partial class CommentsController : ControllerBase
 
     private ObjectResult Problem(int status, string message) => StatusCode(status, new { error = message });
 
+    private static string RateLimitMessage(string what) =>
+        $"Slow down a little: this server allows {Math.Max(0, Cfg.RateLimitPerMinute)} {what} per minute and {Math.Max(0, Cfg.RateLimitPerHour)} per hour. "
+        + "Wait a minute and try again. (Admins can change the limits in Dashboard > Plugins > Cozy Comments.)";
+
     // ======================= settings + cover (admin) =======================
 
     /// <summary>The settings the web client needs (colours, texts, toggles).</summary>
@@ -351,6 +358,7 @@ public partial class CommentsController : ControllerBase
             InputPlaceholder = Text(c.InputPlaceholder, defaults.InputPlaceholder),
             EmptyText = Text(c.EmptyText, defaults.EmptyText),
             SpoilerText = Text(c.SpoilerText, defaults.SpoilerText),
+            ClientVersion = AssetVersion(),
         });
     }
 
@@ -415,13 +423,13 @@ public partial class CommentsController : ControllerBase
         var user = await CurrentUserAsync().ConfigureAwait(false);
         if (user is null)
         {
-            return Problem(401, "Sign in as a user.");
+            return Problem(401, "You are not signed in, or your session has expired. Sign out of Jellyfin and sign in again, then retry.");
         }
 
         var item = AccessibleItem(itemId, user);
         if (item is null)
         {
-            return Problem(404, "Item not found.");
+            return Problem(404, "This item was not found. It may have been removed from the server, or your account can't see its library. Refresh the page; if it keeps happening, ask an admin to check your library access (Dashboard > Users > your user > Access).");
         }
 
         var rows = _store.GetForItem(itemId);
@@ -449,18 +457,18 @@ public partial class CommentsController : ControllerBase
         var user = await CurrentUserAsync().ConfigureAwait(false);
         if (user is null)
         {
-            return Problem(401, "Sign in as a user.");
+            return Problem(401, "You are not signed in, or your session has expired. Sign out of Jellyfin and sign in again, then retry.");
         }
 
         var item = AccessibleItem(itemId, user);
         if (item is null)
         {
-            return Problem(404, "Item not found.");
+            return Problem(404, "This item was not found. It may have been removed from the server, or your account can't see its library. Refresh the page; if it keeps happening, ask an admin to check your library access (Dashboard > Users > your user > Access).");
         }
 
         if (!Commentable(item))
         {
-            return Problem(400, "Comments are not enabled for this kind of item.");
+            return Problem(400, "Comments are turned off for this kind of item. An admin can allow them in Dashboard > Plugins > Cozy Comments > Allow comments on.");
         }
 
         var cfg = Cfg;
@@ -481,13 +489,13 @@ public partial class CommentsController : ControllerBase
         {
             if (!cfg.RepliesEnabled)
             {
-                return Problem(403, "Replies are turned off on this server.");
+                return Problem(403, "Replies are turned off on this server. An admin can turn them on in Dashboard > Plugins > Cozy Comments.");
             }
 
             var parent = _store.Get(pid);
             if (parent is null || parent.ItemId != itemId)
             {
-                return Problem(400, "The comment you replied to no longer exists.");
+                return Problem(400, "The comment you replied to was deleted. Refresh the page to see the current comments.");
             }
 
             // One level deep: a reply to a reply attaches to the top-level comment.
@@ -497,7 +505,7 @@ public partial class CommentsController : ControllerBase
 
         if (!UnderRateLimit(user.Id))
         {
-            return Problem(429, "Slow down a little: too many comments in a short time.");
+            return Problem(429, RateLimitMessage("comments"));
         }
 
         var row = await _store.InsertAsync(new CommentRow
@@ -524,19 +532,19 @@ public partial class CommentsController : ControllerBase
         var user = await CurrentUserAsync().ConfigureAwait(false);
         if (user is null)
         {
-            return Problem(401, "Sign in as a user.");
+            return Problem(401, "You are not signed in, or your session has expired. Sign out of Jellyfin and sign in again, then retry.");
         }
 
         var cfg = Cfg;
         if (!cfg.EditingEnabled)
         {
-            return Problem(403, "Editing comments is turned off on this server.");
+            return Problem(403, "Editing comments is turned off on this server. An admin can turn it on in Dashboard > Plugins > Cozy Comments.");
         }
 
         var row = _store.Get(id);
         if (row is null || AccessibleItem(row.ItemId, user) is null)
         {
-            return Problem(404, "Comment not found.");
+            return Problem(404, "This comment no longer exists (it may have been deleted). Refresh the page to see the current comments.");
         }
 
         if (row.UserId != user.Id)
@@ -557,7 +565,7 @@ public partial class CommentsController : ControllerBase
 
         if (!UnderRateLimit(user.Id))
         {
-            return Problem(429, "Slow down a little: too many edits in a short time.");
+            return Problem(429, RateLimitMessage("edits"));
         }
 
         // Turned-off features keep whatever the comment already had.
@@ -582,19 +590,19 @@ public partial class CommentsController : ControllerBase
         var user = await CurrentUserAsync().ConfigureAwait(false);
         if (user is null)
         {
-            return Problem(401, "Sign in as a user.");
+            return Problem(401, "You are not signed in, or your session has expired. Sign out of Jellyfin and sign in again, then retry.");
         }
 
         var row = _store.Get(id);
         var admin = IsAdmin(user);
         if (row is null || (!admin && AccessibleItem(row.ItemId, user) is null))
         {
-            return Problem(404, "Comment not found.");
+            return Problem(404, "This comment no longer exists (it may have been deleted). Refresh the page to see the current comments.");
         }
 
         if (!admin && (row.UserId != user.Id || !Cfg.DeletingEnabled))
         {
-            return Problem(403, row.UserId != user.Id ? "You can only delete your own comments." : "Deleting comments is turned off on this server.");
+            return Problem(403, row.UserId != user.Id ? "You can only delete your own comments." : "Deleting comments is turned off on this server. An admin can turn it on in Dashboard > Plugins > Cozy Comments.");
         }
 
         var n = await _store.DeleteAsync(id).ConfigureAwait(false);
@@ -617,13 +625,13 @@ public partial class CommentsController : ControllerBase
         var user = await CurrentUserAsync().ConfigureAwait(false);
         if (user is null)
         {
-            return Problem(401, "Sign in as a user.");
+            return Problem(401, "You are not signed in, or your session has expired. Sign out of Jellyfin and sign in again, then retry.");
         }
 
         var cfg = Cfg;
         if (!cfg.CommentsPageEnabled)
         {
-            return Problem(404, "The comments page is turned off on this server.");
+            return Problem(403, "The comments page is turned off on this server. An admin can turn it on in Dashboard > Plugins > Cozy Comments > Comments page, then reload.");
         }
 
         startIndex = Math.Max(0, startIndex);

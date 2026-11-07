@@ -111,3 +111,12 @@ html.jfc-collapse .itemDetailPage .jfc-col:not(.jfc-col-open) { padding-bottom: 
 html:not(.jfc-collapse) .jfc-col-btn { display: none !important; }
 .jfc-col-btn { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; width: 1.7em; height: 1.7em; margin: 0 0 0 .7em; padding: 0; font: 700 1.05em/1 monospace; color: var(--jfc-accent, #00a4dc); background: transparent; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: .2em; cursor: pointer; }
 .jfc-col-btn:hover, .jfc-col-btn:focus-visible { border-color: var(--jfc-accent, #00a4dc); outline: none; }
+
+/* error box (comments section and comments page) */
+.jfc-error { margin: .6em 0; padding: .8em 1em; border: 1px solid color-mix(in srgb, #e5534b 55%, transparent); border-left-width: 4px; border-radius: .25em; background: color-mix(in srgb, #e5534b 8%, transparent); line-height: 1.45; }
+.jfc-error-title { font-weight: 600; margin-bottom: .25em; }
+.jfc-error-text { opacity: .9; font-size: .95em; overflow-wrap: anywhere; }
+.jfc-error-actions { display: flex; flex-wrap: wrap; gap: .5em; margin-top: .7em; }
+
+/* "updated on the server" notice */
+.jfc-update { position: fixed; z-index: 1200; left: 50%; bottom: 1.2em; transform: translateX(-50%); max-width: calc(100vw - 2em); display: flex; flex-wrap: wrap; align-items: center; gap: .6em 1em; padding: .7em 1em; border-radius: .35em; background: #1f1f1f; color: #fff; border: 1px solid var(--jfc-accent, #00a4dc); box-shadow: 0 6px 24px rgba(0,0,0,.5); font-size: .95em; }

@@ -88,7 +88,7 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
    [releases page](https://github.com/IAmParadox27/jellyfin-plugin-file-transformation/releases), using the same steps as below).
 2. Download `cozycomments_<version>.zip` from the
    [Releases page](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/releases).
-3. Make a folder called `cozycomments_<version>` (for example `cozycomments_1.2.0.0`) inside your Jellyfin
+3. Make a folder called `cozycomments_<version>` (for example `cozycomments_1.2.1.0`) inside your Jellyfin
    **plugins** folder, and unzip the files into it:
 
    | How Jellyfin is installed | Plugins folder |
@@ -101,7 +101,7 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
 
    Not sure? **Dashboard → Paths** lists your *Data* folder. `plugins` is inside it.
 4. On Linux, make sure Jellyfin's user can read the folder, for example
-   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_1.2.0.0`.
+   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_1.2.1.0`.
 5. Restart Jellyfin.
 
 ## Configuration
@@ -237,6 +237,8 @@ the way, copy the backup in as `comments.db`, and start Jellyfin.
 | Settings don't change anything | Refresh the page; settings are read when the web app loads (and then every minute). |
 | `configure.py` says 401 | The API key is wrong. Create a new one in **Dashboard → API Keys**. |
 | Home card is missing | It only shows when the comments page is enabled and the home screen has a *My Media* section. |
+| "Cozy Comments isn't answering on this server" or *Request failed (404)* | The page was opened before the plugin was installed, updated or restarted, so it's running an old copy. Reload the page (Ctrl+Shift+R, or close and reopen the app). If it stays, check that Cozy Comments is *Active* in Dashboard → Plugins and restart Jellyfin. |
+| "Cozy Comments was updated on the server" | A newer version was installed while the page was open. Click **Reload**. |
 | Something else | Check the server log (Dashboard → Logs) for lines that start with `[Cozy Comments]`, and open an issue. |
 
 ## Privacy and security

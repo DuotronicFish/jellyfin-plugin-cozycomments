@@ -1,7 +1,8 @@
 # HTTP API
 
 All endpoints live under `/CozyComments` on your Jellyfin server and use Jellyfin's normal authentication
-(`Authorization: MediaBrowser Token="<token>"`).
+(`Authorization: MediaBrowser Token="<token>"`). The old address `/JellyfinComments` (from before the rename) still answers
+too, for pages opened before an upgrade.
 
 - **Comment endpoints** need a signed-in **user** session. API keys are refused, because a comment
   always belongs to a person.
@@ -61,7 +62,7 @@ top-level comment also deletes its replies. Returns `204`.
 
 ### `GET /CozyComments/Recent?startIndex=0&limit=20`
 
-Returns `404` when the comments page is turned off. Otherwise: the newest comments on every item the caller can access, `limit` at most 50. Whether
+Returns `403` when the comments page is turned off. Otherwise: the newest comments on every item the caller can access, `limit` at most 50. Whether
 replies and spoilers are included depends on the settings. Each entry also has `itemName`, `itemType`, and
 (when posters are on) `posterId` and `posterTag`.
 
