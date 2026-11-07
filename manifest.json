@@ -1,0 +1,12 @@
+[
+  {
+    "guid": "dc9c7d6f-2de4-4ee4-9187-6a87ca998510",
+    "name": "Cozy Comments",
+    "description": "Comments, optional 1-5 star ratings, spoilers and replies on movie, series and episode pages, plus a recent-comments page. Requires the File Transformation plugin.",
+    "overview": "A comment and rating system for shared users on Jellyfin",
+    "owner": "DuotronicFish",
+    "category": "General",
+    "imageUrl": "",
+    "versions": []
+  }
+]

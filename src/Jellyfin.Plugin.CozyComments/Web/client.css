@@ -1,0 +1,113 @@
+/* Cozy Comments plugin: web client styles.
+   Colours: --jfc-accent, --jfc-star and --jfc-page-bg are set on <html> by client.js from the plugin settings.
+   Text colours follow whatever Jellyfin theme is active (currentColor based), so any theme works. */
+.jfc-section, .jfc-overlay {
+    --jfc-a: var(--jfc-accent, #00a4dc);
+    --jfc-s: var(--jfc-star, #f5c518);
+    --jfc-dim: color-mix(in srgb, currentColor 62%, transparent);
+    --jfc-line: color-mix(in srgb, currentColor 18%, transparent);
+    --jfc-hover: color-mix(in srgb, var(--jfc-a) 16%, transparent);
+    --jfc-field: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.jfc-section { max-width: 60em; }
+.jfc-title .jfc-total { color: var(--jfc-dim); font-weight: normal; font-size: .8em; }
+
+.jfc-compose { display: flex; flex-direction: column; gap: .5em; margin: .5em 0 1.5em; }
+.jfc-compose.jfc-compact { margin: .6em 0 .4em; }
+.jfc-input { width: 100%; box-sizing: border-box; resize: vertical; min-height: 3.2em; padding: .6em .7em; font: inherit; font-size: .95em; color: inherit; background: var(--jfc-field); border: 1px solid var(--jfc-line); border-radius: .25em; outline: none; }
+.jfc-input:focus { border-color: var(--jfc-a); }
+.jfc-input::placeholder { color: var(--jfc-dim); }
+.jfc-row { display: flex; align-items: center; flex-wrap: wrap; gap: .4em 1em; font-size: .9em; }
+.jfc-spacer { flex: 1 1 auto; }
+.jfc-count { color: var(--jfc-dim); font-size: .85em; }
+.jfc-spoilerlabel { display: inline-flex; align-items: center; gap: .3em; cursor: pointer; color: var(--jfc-dim); user-select: none; }
+.jfc-spoilerlabel input { accent-color: var(--jfc-a); width: 1.05em; height: 1.05em; margin: 0; }
+.jfc-msg { color: #ff7b7b; font-size: .85em; }
+.jfc-msg:empty { display: none; }
+
+.jfc-btn { font: inherit; font-size: .9em; padding: .45em 1.1em; cursor: pointer; border: 1px solid var(--jfc-line); border-radius: .25em; background: transparent; color: inherit; }
+.jfc-btn:hover:not(:disabled) { border-color: var(--jfc-a); background: var(--jfc-hover); }
+.jfc-btn-primary { background: var(--jfc-a); color: #fff; border-color: var(--jfc-a); font-weight: 600; }
+.jfc-btn-primary:hover:not(:disabled) { background: var(--jfc-a); filter: brightness(1.12); }
+.jfc-btn:disabled { opacity: .45; cursor: default; }
+
+/* stars */
+.jfc-star { color: var(--jfc-line); font-size: 1.15em; line-height: 1; }
+.jfc-star.jfc-on { color: var(--jfc-s); }
+.jfc-star, .jfc-star:hover, .jfc-star:focus, .jfc-star:focus-visible, .jfc-star.jfc-on { text-shadow: none !important; box-shadow: none !important; filter: none !important; }
+.jfc-picker { display: inline-flex; gap: .05em; }
+.jfc-picker .jfc-star { background: none; border: 0; padding: 0 .08em; cursor: pointer; font-size: 1.45em; color: var(--jfc-dim); opacity: .55; }
+.jfc-picker .jfc-star.jfc-on { color: var(--jfc-s); opacity: 1; }
+.jfc-stars { margin: .15em 0 .2em; letter-spacing: .05em; }
+
+/* comment list */
+.jfc-list, .jfc-feed { display: flex; flex-direction: column; gap: 1.1em; }
+.jfc-empty { color: var(--jfc-dim); font-size: .95em; }
+.jfc-item { display: flex; gap: .8em; align-items: flex-start; }
+.jfc-avatar { flex: 0 0 auto; width: 2.5em; height: 2.5em; border-radius: 50%; overflow: hidden; background: var(--jfc-line); display: flex; align-items: center; justify-content: center; position: relative; }
+.jfc-reply .jfc-avatar { width: 1.9em; height: 1.9em; font-size: .95em; }
+.jfc-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.jfc-avatar-letter { font-weight: 600; }
+.jfc-main { flex: 1 1 auto; min-width: 0; }
+.jfc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2em .6em; font-size: .9em; }
+.jfc-user { font-weight: 600; }
+.jfc-time, .jfc-edited, .jfc-on { color: var(--jfc-dim); font-size: .92em; }
+.jfc-itemlink { color: var(--jfc-a) !important; text-decoration: none; }
+.jfc-itemlink:hover { text-decoration: underline; }
+.jfc-textwrap { position: relative; margin-top: .2em; }
+.jfc-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.45; }
+
+/* spoilers: blurred until clicked. The wrap is a one-cell grid: the blurred text and the placeholder button
+   share the cell, so the box grows to whichever is taller; overflow:hidden keeps the blur inside the border. */
+.jfc-spoiler { cursor: pointer; display: grid; grid-template: minmax(0, auto) / minmax(0, 1fr); overflow: hidden; border: 1px dashed var(--jfc-a); border-radius: .25em; isolation: isolate; contain: paint; }
+.jfc-spoiler > .jfc-text, .jfc-spoiler > .jfc-spoilerhint { grid-area: 1 / 1; min-width: 0; box-sizing: border-box; }
+.jfc-spoiler .jfc-text { filter: blur(6px); user-select: none; -webkit-user-select: none; pointer-events: none; padding: .35em .6em; overflow: hidden; overflow-wrap: anywhere; word-break: break-word; }
+.jfc-spoilerhint { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; text-align: center; width: 100%; height: 100%; margin: 0; background: color-mix(in srgb, var(--jfc-page-bg, #101010) 35%, transparent); border: 0; color: inherit; font: inherit; font-size: .85em; line-height: 1.35; white-space: normal; overflow-wrap: anywhere; cursor: pointer; padding: .35em .6em; }
+.jfc-spoilerhint:hover { background: var(--jfc-hover); }
+.jfc-spoilerhint:focus-visible { outline: 1px solid var(--jfc-a); outline-offset: -3px; }
+
+.jfc-actions { display: flex; gap: 1.1em; margin-top: .3em; }
+.jfc-actions[hidden] { display: none; }
+.jfc-link, .jfc-toggle { background: none; border: 0; padding: 0; font: inherit; font-size: .82em; color: var(--jfc-dim); cursor: pointer; }
+.jfc-link:hover { color: inherit; filter: brightness(1.4); }
+.jfc-toggle { color: var(--jfc-a); font-weight: 600; margin-top: .5em; display: block; }
+.jfc-replies { display: flex; flex-direction: column; gap: .9em; margin-top: .7em; }
+.jfc-replies[hidden] { display: none; }
+
+/* "show more" after the first N words of a long comment */
+.jfc-text:focus { outline: none; }
+.jfc-showmore { display: inline; background: none !important; border: 0; padding: 0; margin: 0; font: inherit; font-size: .9em; font-weight: 600; line-height: inherit; color: var(--jfc-a) !important; cursor: pointer; white-space: nowrap; text-shadow: none !important; box-shadow: none !important; filter: none !important; }
+.jfc-showmore:hover { text-decoration: underline; }
+.jfc-showmore:focus { outline: none; }
+.jfc-showmore:focus-visible { outline: 1px solid var(--jfc-a); outline-offset: 2px; }
+
+/* the section sits inside the primary content column, right under the metadata block */
+.detailPagePrimaryContent .jfc-section { margin-top: 2em; }
+
+/* home card: the clone keeps Jellyfin's own card classes, so the theme styles it like the library tiles */
+.jfc-cardimg { background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
+
+/* the comments page (overlay) */
+html.jfc-noscroll, html.jfc-noscroll body { overflow: hidden !important; }
+.jfc-overlay { position: fixed; inset: 0; z-index: 1100; overflow-y: auto; background: var(--jfc-page-bg, #101010); -webkit-overflow-scrolling: touch; }
+.jfc-overlay-inner { max-width: 54em; margin: 0 auto; padding: max(1em, env(safe-area-inset-top)) 1em 3em; box-sizing: border-box; }
+.jfc-overlay-bar { display: flex; align-items: center; justify-content: space-between; gap: 1em; position: sticky; top: 0; background: var(--jfc-page-bg, #101010); padding: .6em 0; margin-bottom: 1em; border-bottom: 1px solid var(--jfc-line); z-index: 1; }
+.jfc-overlay-title { margin: 0 !important; padding: 0 !important; }
+.jfc-feeditem { padding-bottom: 1em; border-bottom: 1px solid var(--jfc-line); }
+.jfc-more { margin: 1.5em auto 0; display: block; }
+.jfc-more[hidden] { display: none; }
+.jfc-feeditem .jfc-poster { flex: 0 0 auto; width: 4em; aspect-ratio: 2 / 3; margin-left: auto; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; background: var(--jfc-line); border: 1px solid var(--jfc-line); border-radius: .2em; text-decoration: none; }
+.jfc-feeditem .jfc-poster:hover { border-color: var(--jfc-a); }
+.jfc-feeditem .jfc-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.jfc-poster-ph { color: var(--jfc-dim); font-size: 1.6em; }
+@media (max-width: 40em) { .jfc-feeditem .jfc-poster { width: 3.2em; } }
+
+/* optional (CollapseDetailSections): Cast & Crew, Guest cast, Special features, Scenes, Additional parts and
+   Music videos get a +/- button and start collapsed. html.jfc-collapse is only set when the setting is on. */
+html.jfc-collapse .itemDetailPage .jfc-col:not(.jfc-col-open) > :not(.sectionTitle):not(.jfc-col-btn) { display: none !important; }
+html.jfc-collapse .itemDetailPage .jfc-col > .sectionTitle { display: inline-block; padding-right: 0 !important; padding-inline-end: 0 !important; cursor: pointer; user-select: none; -webkit-user-select: none; }
+html.jfc-collapse .itemDetailPage .jfc-col:not(.jfc-col-open) { padding-bottom: 0 !important; margin-bottom: .6em; }
+html:not(.jfc-collapse) .jfc-col-btn { display: none !important; }
+.jfc-col-btn { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; width: 1.7em; height: 1.7em; margin: 0 0 0 .7em; padding: 0; font: 700 1.05em/1 monospace; color: var(--jfc-accent, #00a4dc); background: transparent; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: .2em; cursor: pointer; }
+.jfc-col-btn:hover, .jfc-col-btn:focus-visible { border-color: var(--jfc-accent, #00a4dc); outline: none; }

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Cozy Comments</title>
+</head>
+<body>
+<div id="JfcConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <style>
+                #JfcConfigPage fieldset { border: 1px solid rgba(128,128,128,.35); border-radius: .3em; padding: 1em 1.2em .4em; margin: 0 0 1.6em; }
+                #JfcConfigPage legend { font-weight: 600; padding: 0 .4em; }
+                #JfcConfigPage .jfc-colorrow { display: flex; gap: .6em; align-items: flex-end; }
+                #JfcConfigPage .jfc-colorrow .inputContainer { flex: 1 1 auto; }
+                #JfcConfigPage .jfc-colorrow input[type=color] { width: 3em; height: 2.4em; padding: 0; border: 0; background: none; margin-bottom: 1.8em; cursor: pointer; }
+                #JfcConfigPage .jfc-cover { display: flex; gap: 1.2em; align-items: center; flex-wrap: wrap; margin-bottom: 1.2em; }
+                #JfcConfigPage .jfc-cover-preview { width: 16em; aspect-ratio: 16 / 9; background: rgba(128,128,128,.2) center / cover no-repeat; border-radius: .3em; display: flex; align-items: center; justify-content: center; color: rgba(128,128,128,.9); }
+                #JfcConfigPage .jfc-note { opacity: .75; font-size: .9em; margin: 0 0 1.4em; }
+            </style>
+            <form id="JfcConfigForm">
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2 class="sectionTitle">Cozy Comments</h2>
+                </div>
+                <p class="jfc-note">Changes apply without restarting Jellyfin. Users see them the next time they load or refresh the web app.
+                    Requires the <b>File Transformation</b> plugin. Documentation: see the project README.</p>
+
+                <fieldset>
+                    <legend>Comments page</legend>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="CommentsPageEnabled"><span>Enable the comments page</span></label>
+                        <div class="fieldDescription checkboxFieldDescription">A page with everyone's newest comments, opened from a card in "My Media" on the home screen. Turn off to remove both. Comments on movie and show pages are not affected.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="PageName">Page name</label>
+                        <input is="emby-input" type="text" id="PageName" maxlength="80">
+                        <div class="fieldDescription">Title of the page that lists the newest comments (for example "Movie Club").</div>
+                    </div>
+                    <div class="jfc-colorrow">
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="PageBackgroundColor">Page background colour</label>
+                            <input is="emby-input" type="text" id="PageBackgroundColor" maxlength="60">
+                            <div class="fieldDescription">Any CSS colour: #101010, rgb(16,16,16), black…</div>
+                        </div>
+                        <input type="color" data-for="PageBackgroundColor" aria-label="Pick page background colour">
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="ShowPostersOnPage"><span>Show the movie / show poster next to each comment</span></label>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="ShowSpoilersOnPage"><span>Include spoiler comments (shown blurred)</span></label>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="ShowRepliesOnPage"><span>Include replies</span></label>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="PageSize">Comments per "Load more"</label>
+                        <input is="emby-input" type="number" id="PageSize" min="1" max="50">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Home screen card</legend>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="HomeCardLabel">Card label</label>
+                        <input is="emby-input" type="text" id="HomeCardLabel" maxlength="80">
+                        <div class="fieldDescription">Leave empty to use the page name.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="HomeCardAfterLibrary">Place the card after this library</label>
+                        <input is="emby-input" type="text" id="HomeCardAfterLibrary" maxlength="120">
+                        <div class="fieldDescription">Library name, e.g. "Movies". Leave empty to put the card last.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="RenameMyMediaTo">Rename the "My Media" heading to</label>
+                        <input is="emby-input" type="text" id="RenameMyMediaTo" maxlength="80">
+                        <div class="fieldDescription">Optional. Leave empty to keep Jellyfin's heading.</div>
+                    </div>
+                    <div class="jfc-cover">
+                        <div class="jfc-cover-preview" id="JfcCoverPreview"><span class="material-icons">forum</span></div>
+                        <div>
+                            <div><b>Card image</b> (16:9 works best, JPEG/PNG/WebP/GIF, max 5 MB)</div>
+                            <input type="file" id="JfcCoverFile" accept="image/jpeg,image/png,image/webp,image/gif" style="margin:.6em 0">
+                            <div>
+                                <button is="emby-button" type="button" class="raised button-submit" id="JfcCoverUpload"><span>Upload image</span></button>
+                                <button is="emby-button" type="button" class="raised" id="JfcCoverRemove"><span>Remove image</span></button>
+                            </div>
+                            <div class="fieldDescription" id="JfcCoverMsg"></div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Colours</legend>
+                    <div class="jfc-colorrow">
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="AccentColor">Accent colour</label>
+                            <input is="emby-input" type="text" id="AccentColor" maxlength="60">
+                            <div class="fieldDescription">Buttons, links and the spoiler border.</div>
+                        </div>
+                        <input type="color" data-for="AccentColor" aria-label="Pick accent colour">
+                    </div>
+                    <div class="jfc-colorrow">
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="StarColor">Star colour</label>
+                            <input is="emby-input" type="text" id="StarColor" maxlength="60">
+                        </div>
+                        <input type="color" data-for="StarColor" aria-label="Pick star colour">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Features</legend>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="StarRatingsEnabled"><span>Star ratings (optional 1-5 stars on a comment)</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="SpoilersEnabled"><span>Spoilers (users can blur a comment until it's clicked)</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="RepliesEnabled"><span>Replies</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="EditingEnabled"><span>Users can edit their own comments</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="DeletingEnabled"><span>Users can delete their own comments (admins always can)</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="CollapseDetailSections"><span>Make Cast &amp; Crew, Special Features etc. collapsible (start collapsed)</span></label></div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="MaxCommentLength">Maximum characters per comment</label>
+                        <input is="emby-input" type="number" id="MaxCommentLength" min="1" max="10000">
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="PreviewWordLimit">Preview length (words) before "show more"</label>
+                        <input is="emby-input" type="number" id="PreviewWordLimit" min="0" max="10000">
+                        <div class="fieldDescription">0 = always show the whole comment.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ShowMoreText">"Show more" button text</label>
+                        <input is="emby-input" type="text" id="ShowMoreText" maxlength="60">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Where comments are allowed</legend>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="AllowOnMovies"><span>Movies</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="AllowOnSeries"><span>TV series</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="AllowOnEpisodes"><span>TV episodes</span></label></div>
+                    <div class="checkboxContainer"><label class="emby-checkbox-label"><input is="emby-checkbox" type="checkbox" id="AllowOnVideos"><span>Other videos (home videos libraries)</span></label></div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Texts</legend>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="SectionTitle">Heading on movie / show pages</label>
+                        <input is="emby-input" type="text" id="SectionTitle" maxlength="80">
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="InputPlaceholder">Comment box placeholder</label>
+                        <input is="emby-input" type="text" id="InputPlaceholder" maxlength="200">
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="EmptyText">Text when there are no comments</label>
+                        <input is="emby-input" type="text" id="EmptyText" maxlength="200">
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="SpoilerText">Text over a hidden spoiler</label>
+                        <input is="emby-input" type="text" id="SpoilerText" maxlength="200">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Limits and backups</legend>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="RateLimitPerMinute">Comments/edits per user per minute</label>
+                        <input is="emby-input" type="number" id="RateLimitPerMinute" min="0" max="1000">
+                        <div class="fieldDescription">0 = unlimited.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="RateLimitPerHour">Comments/edits per user per hour</label>
+                        <input is="emby-input" type="number" id="RateLimitPerHour" min="0" max="100000">
+                        <div class="fieldDescription">0 = unlimited.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="BackupsToKeep">Daily database backups to keep</label>
+                        <input is="emby-input" type="number" id="BackupsToKeep" min="0" max="365">
+                        <div class="fieldDescription">0 = no backups. Backups go to plugins/configurations/Jellyfin.Plugin.CozyComments/backups in your Jellyfin data folder.</div>
+                    </div>
+                </fieldset>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button"><span>Save</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            var pluginId = 'dc9c7d6f-2de4-4ee4-9187-6a87ca998510';
+            var page = document.querySelector('#JfcConfigPage');
+            var TEXT = ['PageName', 'PageBackgroundColor', 'HomeCardLabel', 'HomeCardAfterLibrary', 'RenameMyMediaTo', 'AccentColor', 'StarColor',
+                'ShowMoreText', 'SectionTitle', 'InputPlaceholder', 'EmptyText', 'SpoilerText'];
+            var NUM = ['PageSize', 'MaxCommentLength', 'PreviewWordLimit', 'RateLimitPerMinute', 'RateLimitPerHour', 'BackupsToKeep'];
+            var BOOL = ['ShowPostersOnPage', 'ShowSpoilersOnPage', 'ShowRepliesOnPage', 'CommentsPageEnabled', 'StarRatingsEnabled', 'SpoilersEnabled',
+                'RepliesEnabled', 'EditingEnabled', 'DeletingEnabled', 'CollapseDetailSections', 'AllowOnMovies', 'AllowOnSeries', 'AllowOnEpisodes', 'AllowOnVideos'];
+
+            function $(id) { return page.querySelector('#' + id); }
+            function toHex(v) { return /^#[0-9a-f]{6}$/i.test(v) ? v : (/^#[0-9a-f]{3}$/i.test(v) ? '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3] : '#000000'); }
+            function syncPickers() { page.querySelectorAll('input[type=color]').forEach(function (p) { p.value = toHex($(p.dataset.for).value.trim()); }); }
+            function authHeaders(type) {
+                var h = { Authorization: 'MediaBrowser Token="' + ApiClient.accessToken() + '"' };
+                if (type) { h['Content-Type'] = type; }
+                return h;
+            }
+            function loadCover() {
+                fetch(ApiClient.getUrl('CozyComments/Settings'), { headers: authHeaders() }).then(function (r) { return r.json(); }).then(function (s) {
+                    var prev = $('JfcCoverPreview');
+                    if (s.coverTag) {
+                        prev.style.backgroundImage = 'url("' + ApiClient.getUrl('CozyComments/Cover', { v: s.coverTag }) + '")';
+                        prev.firstElementChild.style.display = 'none';
+                    } else {
+                        prev.style.backgroundImage = '';
+                        prev.firstElementChild.style.display = '';
+                    }
+                }).catch(function () { /* plugin API unavailable */ });
+            }
+
+            page.querySelectorAll('input[type=color]').forEach(function (p) {
+                p.addEventListener('input', function () { $(p.dataset.for).value = p.value; });
+            });
+            ['PageBackgroundColor', 'AccentColor', 'StarColor'].forEach(function (id) { $(id).addEventListener('change', syncPickers); });
+
+            page.addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                    TEXT.forEach(function (k) { $(k).value = c[k] || ''; });
+                    NUM.forEach(function (k) { $(k).value = c[k]; });
+                    BOOL.forEach(function (k) { $(k).checked = !!c[k]; });
+                    syncPickers();
+                    loadCover();
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            page.querySelector('#JfcConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                    TEXT.forEach(function (k) { c[k] = $(k).value.trim(); });
+                    NUM.forEach(function (k) { var n = parseInt($(k).value, 10); if (!isNaN(n)) { c[k] = n; } });
+                    BOOL.forEach(function (k) { c[k] = $(k).checked; });
+                    ApiClient.updatePluginConfiguration(pluginId, c).then(Dashboard.processPluginConfigurationUpdateResult);
+                });
+                return false;
+            });
+
+            $('JfcCoverUpload').addEventListener('click', function () {
+                var f = $('JfcCoverFile').files[0];
+                var msg = $('JfcCoverMsg');
+                if (!f) { msg.textContent = 'Choose an image first.'; return; }
+                msg.textContent = 'Uploading…';
+                fetch(ApiClient.getUrl('CozyComments/Cover'), { method: 'POST', headers: authHeaders(f.type || 'application/octet-stream'), body: f })
+                    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { throw new Error(j.error || ('HTTP ' + r.status)); } }); })
+                    .then(function () { msg.textContent = 'Image saved.'; $('JfcCoverFile').value = ''; loadCover(); })
+                    .catch(function (err) { msg.textContent = 'Upload failed: ' + err.message; });
+            });
+            $('JfcCoverRemove').addEventListener('click', function () {
+                var msg = $('JfcCoverMsg');
+                fetch(ApiClient.getUrl('CozyComments/Cover'), { method: 'DELETE', headers: authHeaders() })
+                    .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } msg.textContent = 'Image removed (the card shows an icon).'; loadCover(); })
+                    .catch(function (err) { msg.textContent = 'Could not remove: ' + err.message; });
+            });
+        })();
+    </script>
+</div>
+</body>
+</html>

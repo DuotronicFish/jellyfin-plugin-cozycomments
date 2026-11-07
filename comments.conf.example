@@ -1,0 +1,106 @@
+# ============================================================================
+#  Cozy Comments: settings file
+#
+#  1. Copy this file to "comments.conf" and edit the values below.
+#  2. Run:   python3 scripts/configure.py comments.conf
+#
+#  The script sends these settings to your Jellyfin server (no restart needed).
+#  Anything you leave out or comment out keeps its current value on the server.
+#  You can change all of this in Dashboard > Plugins > Cozy Comments as well.
+#
+#  Yes/no values accept: true/false, yes/no, on/off, 1/0
+#  Colours accept any CSS colour: #ffcc00, #fc0, rgb(255,204,0), gold ...
+# ============================================================================
+
+[server]
+# Address of your Jellyfin server, as you open it in a browser.
+url = http://localhost:8096
+# An API key: Dashboard > API Keys > "+". (Or leave empty and set the
+# JELLYFIN_API_KEY environment variable instead, so the key isn't saved in a file.)
+api_key =
+
+
+[page]
+# Turn the comments page on or off. When off, there is no comments page and no
+# card for it on the home screen. Comments on movie / show pages still work.
+enabled = yes
+# Name of the comments page (the page that lists everyone's newest comments).
+name = Recent Comments
+# Image on the home-screen card that opens the comments page.
+# A path to a JPEG/PNG/WebP/GIF file (16:9 looks best, max 5 MB).
+# Leave empty to keep the current image, or write "none" to remove it (an icon is shown instead).
+image =
+# Background colour of the comments page.
+background_color = #101010
+# Show the movie / show poster next to each comment on the comments page.
+show_posters = yes
+# Show comments marked as spoilers on the comments page (they stay blurred until clicked).
+show_spoilers = no
+# Show replies on the comments page (top-level comments are always shown).
+show_replies = no
+# How many comments to load at a time ("Load more" button), 1-50.
+page_size = 20
+
+
+[home]
+# Label under the card. Empty = same as the page name.
+card_label =
+# Put the card right after this library (its name as shown in Jellyfin). Empty = last.
+card_after_library =
+# Optional: rename the "My Media" heading on the home screen. Empty = leave it alone.
+rename_my_media_to =
+
+
+[colors]
+# Buttons, links, the "show more" button and the spoiler border.
+accent_color = #00a4dc
+# Colour of the rating stars.
+star_color = #f5c518
+
+
+[features]
+# Users can give an optional 1-5 star rating with a comment.
+star_ratings = yes
+# Users can mark a comment as a spoiler (blurred until clicked).
+spoilers = yes
+# Users can reply to comments.
+replies = yes
+# Users can edit their own comments.
+editing = yes
+# Users can delete their own comments (administrators can always delete any comment).
+deleting = yes
+# Maximum characters in one comment (1-10000).
+max_comment_length = 2000
+# Long comments are cut after this many words, with a "show more" button. 0 = never cut.
+preview_word_limit = 30
+# Text of that button.
+show_more_text = show more
+# Give Cast & Crew, Special Features, Scenes, etc. on detail pages a +/- button and start them collapsed.
+collapse_detail_sections = no
+
+
+[allow_comments_on]
+movies = yes
+series = yes
+episodes = yes
+# Items in "Home videos" type libraries.
+videos = yes
+
+
+[texts]
+# Heading above the comments on a movie / show page.
+section_title = Comments
+# Placeholder in the comment box.
+input_placeholder = Add a comment…
+# Shown when there are no comments yet.
+empty_text = No comments yet. Be the first!
+# Shown over a hidden spoiler.
+spoiler_text = Spoiler: click to reveal
+
+
+[limits]
+# Comments + edits one user may post per minute / per hour. 0 = unlimited.
+per_minute = 6
+per_hour = 60
+# Daily backups of the comments database to keep. 0 = no backups.
+backups_to_keep = 14
