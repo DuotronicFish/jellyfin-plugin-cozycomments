@@ -576,7 +576,19 @@
         }
     }
 
+    // jellyfin-web 12: cloning a card also creates its custom elements (e.g. the library refresh ring), which subscribe to
+    // server socket messages straight away. The clone has no data-id, so those handlers would throw on every message
+    // (e.g. 20 errors per library scan); drop their subscriptions before anything else.
+    function releaseSubscriptions(root) {
+        [root].concat(Array.prototype.slice.call(root.querySelectorAll('*'))).forEach(function (n) {
+            try {
+                if (n._wsUnsubscribers && n._wsUnsubscribers.forEach) { n._wsUnsubscribers.forEach(function (f) { if (typeof f === 'function') { f(); } }); n._wsUnsubscribers = []; }
+                if (typeof n._unsubscribeUserData === 'function') { n._unsubscribeUserData(); n._unsubscribeUserData = null; }
+            } catch (e) { /* ignore */ }
+        });
+    }
     function stripCard(root) {
+        releaseSubscriptions(root);
         [root].concat(Array.prototype.slice.call(root.querySelectorAll('*'))).forEach(function (n) {
             Array.prototype.slice.call(n.attributes).forEach(function (a) { if (a.name.indexOf('data-') === 0) { n.removeAttribute(a.name); } });
             n.classList.remove('itemAction', 'lazy', 'blurhashed', 'lazy-image-fadein-fast', 'lazy-image-fadein');
