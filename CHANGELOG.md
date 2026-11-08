@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0.0
+
+- **Requires Jellyfin 12.x** (built for .NET 10 against Jellyfin 12.0, `targetAbi` 12.0.0.0) and the Jellyfin 12 build of
+  File Transformation. On Jellyfin 10.11.x keep using **1.2.1.0**; the plugin repository keeps offering it to 10.11 servers.
+- No changes to comments, settings or the API. Upgrading Jellyfin from 10.11 to 12 keeps all comments (the database
+  lives in the plugin's own folder and is not touched by Jellyfin's upgrade). The `/JellyfinComments` address and the
+  data carry-over from the old `Jellyfin.Plugin.Comments` folder are still there.
+- Fixed (Jellyfin 12 web app): the *My Media* comments card no longer causes a script error on every library-scan
+  progress message (jellyfin-web 12 starts socket subscriptions inside cloned cards).
+- Tested on Jellyfin 12.4 with File Transformation 3.0.3.0 (12.4 build), in both the Modern and the Legacy layout.
+
 ## 1.2.1.0
 
 - Fixed: after upgrading from Lagtime Comments / Jellyfin Comments, browser tabs that were open during the upgrade
