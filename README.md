@@ -41,6 +41,7 @@ You choose the page's name, image and colours, and turn each feature on or off.
 - [Installation](#installation)
   - [Option A: plugin repository (recommended)](#option-a-plugin-repository-recommended)
   - [Option B: manual install from a zip](#option-b-manual-install-from-a-zip)
+  - [Still on Jellyfin 10.11?](#still-on-jellyfin-1011)
 - [Configuration](#configuration)
   - [In the Dashboard](#in-the-dashboard)
   - [With a settings file (`comments.conf`)](#with-a-settings-file-commentsconf)
@@ -101,8 +102,29 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
 
    Not sure? **Dashboard → Paths** lists your *Data* folder. `plugins` is inside it.
 4. On Linux, make sure Jellyfin's user can read the folder, for example
-   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_1.2.1.0`.
+   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_2.0.0.0`.
 5. Restart Jellyfin.
+
+### Still on Jellyfin 10.11?
+
+Cozy Comments **2.x** is for Jellyfin **12.x**. For Jellyfin **10.11.x** there is **1.2.1.0**, which has the same
+features and keeps working.
+
+| Your Jellyfin (Dashboard → About) | Cozy Comments version |
+|---|---|
+| 12.x | 2.x (latest) |
+| 10.11.x | 1.2.1.0 |
+
+- **Plugin repository (Option A):** nothing to change. Add the same repository URL and Jellyfin's Catalog
+  offers 1.2.1.0 on a 10.11 server and 2.x on a 12 server by itself. File Transformation's repository does the
+  same for its own builds.
+- **Manual install (Option B):** download `cozycomments_1.2.1.0.zip` from the
+  [1.2.1.0 release](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/releases/tag/v1.2.1.0), and use the
+  File Transformation build made for 10.11.
+- **Source code:** the [`jellyfin-10.11`](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/tree/jellyfin-10.11)
+  branch. New features go into 2.x; 1.2.x only gets serious bug fixes.
+- **Upgrading Jellyfin to 12 later:** upgrade Jellyfin, then update File Transformation and Cozy Comments to
+  their 12 versions and restart. Your comments and settings are kept.
 
 ## Configuration
 

@@ -44,7 +44,7 @@ jobs:
           if [ "v$VERSION" != "$TAG" ]; then echo "Tag $TAG does not match csproj version $VERSION"; exit 1; fi
           ZIP="cozycomments_${VERSION}.zip"
           URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${ZIP}"
-          gh release create "$TAG" "dist/$ZIP" --title "Cozy Comments $VERSION" --notes "See [CHANGELOG.md](CHANGELOG.md)." || \
+          gh release create "$TAG" "dist/$ZIP" --title "Cozy Comments $VERSION (Jellyfin 12.x)" --latest --notes "See [CHANGELOG.md](CHANGELOG.md)." || \
             gh release upload "$TAG" "dist/$ZIP" --clobber
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
