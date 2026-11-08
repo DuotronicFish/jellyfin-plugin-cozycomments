@@ -1,5 +1,7 @@
 # Builds the plugin on every push / pull request. On a tag "v<version>" it also publishes a GitHub release
 # with the zip and adds that version to manifest.json on the default branch (the plugin repository URL).
+# This version of the workflow builds the Jellyfin 12.x plugin (2.x, targetAbi 12.0.0.0). Older manifest entries
+# (1.2.x for Jellyfin 10.11) are kept: update_manifest.py only adds/replaces the version being released.
 name: Build and release
 
 on:
@@ -21,7 +23,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Build
         run: scripts/build.sh
@@ -49,7 +51,7 @@ jobs:
           git fetch origin "${{ github.event.repository.default_branch }}"
           git checkout "${{ github.event.repository.default_branch }}"
           python3 scripts/update_manifest.py --manifest manifest.json --version "$VERSION" --url "$URL" \
-            --checksum "$(md5sum "dist/$ZIP" | cut -d' ' -f1)" --abi 10.11.0.0 \
+            --checksum "$(md5sum "dist/$ZIP" | cut -d' ' -f1)" --abi 12.0.0.0 \
             --timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --changelog "See CHANGELOG.md for ${VERSION}"
           git add manifest.json
           git commit -m "manifest: add ${VERSION}" || echo "manifest unchanged"
