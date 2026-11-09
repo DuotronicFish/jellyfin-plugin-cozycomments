@@ -3,7 +3,7 @@
 **A comment and rating system for shared users on Jellyfin.**
 
 Cozy Comments adds a comment section to every movie, series and episode page in the Jellyfin web app,
-plus a **comments page** that shows everyone's newest comments, opened from a card on the home screen.
+plus a comments page that shows everyone's newest comments, opened from a card on the home screen.
 You choose the page's name, image and colours, and turn each feature on or off.
 
 - **Comments** on movies, series, episodes and home videos, shown under the item's details
@@ -21,13 +21,13 @@ You choose the page's name, image and colours, and turn each feature on or off.
 
 ## Screenshots
 
-**Comments, ratings and replies on a movie page**
-
-![Comments under a movie](docs/images/movie-comments.png)
-
 **The comments page**
 
 ![The comments page](docs/images/comments-page.png)
+
+**Comments, ratings and replies on a movie page**
+
+![Comments under a movie](docs/images/movie-comments.png)
 
 **Settings (Dashboard → Plugins → Cozy Comments)**
 
@@ -279,3 +279,4 @@ the way, copy the backup in as `comments.db`, and start Jellyfin.
 - Uses [File Transformation](https://github.com/IAmParadox27/jellyfin-plugin-file-transformation) by IAmParadox27
   (GPL-3.0, installed separately; Cozy Comments only talks to it at runtime and includes none of its code).
 - Not affiliated with the Jellyfin project.
+- Coding assistance from Claude, tested on multiple server instances, heavily reviewed for security and efficiency, project will be closely maintained.
