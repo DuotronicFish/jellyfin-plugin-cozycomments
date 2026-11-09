@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.2.0
+
+- Fixed: on Jellyfin 10.11.0 to 10.11.4 the plugin did not load ("Could not load file or assembly 'Microsoft.Data.Sqlite,
+  Version=9.0.11.0'", status *Malfunctioned*). It asked for the SQLite library version that ships with Jellyfin 10.11.5
+  and later. It now asks for 9.0.0, which every 10.11.x server has.
+- No other changes. Comments, settings and backups are kept when updating.
+- Tested on Jellyfin 10.11.4 (File Transformation 2.5.5.0) and 10.11.11 (File Transformation 3.0.3.0).
+
 ## 1.2.1.0
 
 - Fixed: after upgrading from Lagtime Comments / Jellyfin Comments, browser tabs that were open during the upgrade

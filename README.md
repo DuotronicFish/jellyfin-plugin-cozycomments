@@ -88,7 +88,7 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
    [releases page](https://github.com/IAmParadox27/jellyfin-plugin-file-transformation/releases), using the same steps as below).
 2. Download `cozycomments_<version>.zip` from the
    [Releases page](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/releases).
-3. Make a folder called `cozycomments_<version>` (for example `cozycomments_1.2.1.0`) inside your Jellyfin
+3. Make a folder called `cozycomments_<version>` (for example `cozycomments_1.2.2.0`) inside your Jellyfin
    **plugins** folder, and unzip the files into it:
 
    | How Jellyfin is installed | Plugins folder |
@@ -101,7 +101,7 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
 
    Not sure? **Dashboard → Paths** lists your *Data* folder. `plugins` is inside it.
 4. On Linux, make sure Jellyfin's user can read the folder, for example
-   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_1.2.1.0`.
+   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_1.2.2.0`.
 5. Restart Jellyfin.
 
 ## Configuration
