@@ -58,7 +58,7 @@ You choose the page's name, image and colours, and turn each feature on or off.
 
 | | |
 |---|---|
-| **Jellyfin** | **12.x** for Cozy Comments 2.x (installs on Linux, Windows, macOS, Docker, NAS…). Still on **10.11.x**? Use Cozy Comments **1.2.1.0**; the plugin repository offers each server the version that fits it. |
+| **Jellyfin** | **12.x** for Cozy Comments 2.x (installs on Linux, Windows, macOS, Docker, NAS…). Still on **10.11.x**? Use Cozy Comments **1.2.2.0**; the plugin repository offers each server the version that fits it. |
 | **File Transformation plugin** | Needed, in the build for your Jellyfin version (its repository offers the right one). It's what lets plugins add things to the web app without changing Jellyfin's files. Installation is below. |
 | **Clients** | The Jellyfin web app and the apps that load it from your server (see [Which apps show comments?](#which-apps-show-comments)) |
 
@@ -89,7 +89,7 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
    [releases page](https://github.com/IAmParadox27/jellyfin-plugin-file-transformation/releases), using the same steps as below).
 2. Download `cozycomments_<version>.zip` from the
    [Releases page](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/releases).
-3. Make a folder called `cozycomments_<version>` (for example `cozycomments_2.0.0.0` on Jellyfin 12.x, `cozycomments_1.2.1.0` on 10.11.x) inside your Jellyfin
+3. Make a folder called `cozycomments_<version>` (for example `cozycomments_2.0.1.0` on Jellyfin 12.x, `cozycomments_1.2.2.0` on 10.11.x) inside your Jellyfin
    **plugins** folder, and unzip the files into it:
 
    | How Jellyfin is installed | Plugins folder |
@@ -102,24 +102,24 @@ This is the easiest way, and Jellyfin will tell you when there's an update.
 
    Not sure? **Dashboard → Paths** lists your *Data* folder. `plugins` is inside it.
 4. On Linux, make sure Jellyfin's user can read the folder, for example
-   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_2.0.0.0`.
+   `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/cozycomments_2.0.1.0`.
 5. Restart Jellyfin.
 
 ### Still on Jellyfin 10.11?
 
-Cozy Comments **2.x** is for Jellyfin **12.x**. For Jellyfin **10.11.x** there is **1.2.1.0**, which has the same
+Cozy Comments **2.x** is for Jellyfin **12.x**. For Jellyfin **10.11.x** there is **1.2.2.0**, which has the same
 features and keeps working.
 
 | Your Jellyfin (Dashboard → About) | Cozy Comments version |
 |---|---|
 | 12.x | 2.x (latest) |
-| 10.11.x | 1.2.1.0 |
+| 10.11.x | 1.2.2.0 |
 
 - **Plugin repository (Option A):** nothing to change. Add the same repository URL and Jellyfin's Catalog
-  offers 1.2.1.0 on a 10.11 server and 2.x on a 12 server by itself. File Transformation's repository does the
+  offers 1.2.2.0 on a 10.11 server and 2.x on a 12 server by itself. File Transformation's repository does the
   same for its own builds.
-- **Manual install (Option B):** download `cozycomments_1.2.1.0.zip` from the
-  [1.2.1.0 release](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/releases/tag/v1.2.1.0), and use the
+- **Manual install (Option B):** download `cozycomments_1.2.2.0.zip` from the
+  [1.2.2.0 release](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/releases/tag/v1.2.2.0), and use the
   File Transformation build made for 10.11.
 - **Source code:** the [`jellyfin-10.11`](https://github.com/DuotronicFish/jellyfin-plugin-cozycomments/tree/jellyfin-10.11)
   branch. New features go into 2.x; 1.2.x only gets serious bug fixes.
@@ -254,7 +254,7 @@ the way, copy the backup in as `comments.db`, and start Jellyfin.
 | Problem | Fix |
 |---|---|
 | No comment section anywhere | Is **File Transformation** installed and *Active* (Dashboard → Plugins)? Did you restart after installing both? Hard-refresh the browser (Ctrl+Shift+R). |
-| Plugin shows *NotSupported* / *Malfunctioned* | The plugin version doesn't match your Jellyfin: 2.x needs Jellyfin 12.x, 1.2.1.0 is for 10.11.x. Check **Dashboard → About**. After upgrading Jellyfin from 10.11 to 12, update File Transformation and Cozy Comments too. |
+| Plugin shows *NotSupported* / *Malfunctioned* | The plugin version doesn't match your Jellyfin: 2.x needs Jellyfin 12.x, 1.2.2.0 is for 10.11.x. Check **Dashboard → About**. After upgrading Jellyfin from 10.11 to 12, update File Transformation and Cozy Comments too. |
 | Works in the browser but not in the phone app | Fully close and reopen the app; clear the app's cache if needed. |
 | Settings don't change anything | Refresh the page; settings are read when the web app loads (and then every minute). |
 | `configure.py` says 401 | The API key is wrong. Create a new one in **Dashboard → API Keys**. |

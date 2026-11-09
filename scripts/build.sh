@@ -7,7 +7,7 @@
 #                                          #   e.g. https://github.com/OWNER/jellyfin-plugin-cozycomments/releases/download/v1.2.0.0/cozycomments_1.2.0.0.zip
 #   scripts/build.sh --jellyfin 12.4.0     # compile against a specific 12.x package version (default 12.0.0)
 #
-# This branch builds the Jellyfin 12.x plugin (2.x, targetAbi 12.0.0.0). The Jellyfin 10.11 build is 1.2.1.0 (tag v1.2.1.0).
+# This branch builds the Jellyfin 12.x plugin (2.x, targetAbi 12.0.0.0). The Jellyfin 10.11 build is 1.2.2.0 (tag v1.2.2.0).
 # Needs the .NET 10 SDK (https://dotnet.microsoft.com/download). Set DOTNET=/path/to/dotnet if it isn't on PATH.
 set -euo pipefail
 

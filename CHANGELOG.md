@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.1.0
+
+- Fixed: on Jellyfin 12.0 to 12.3 the plugin did not load ("Could not load file or assembly 'Microsoft.Data.Sqlite,
+  Version=10.0.14.0'", status *Malfunctioned*). 2.0.0.0 asked for the SQLite library version that ships with Jellyfin
+  12.4, and older 12.x servers ship an earlier one. It now asks for 10.0.0, which every 12.x server has.
+- No other changes. Comments, settings and backups are kept when updating.
+- Tested on Jellyfin 12.0, 12.2, 12.3 and 12.4 with File Transformation 3.0.3.0 (the build for each version),
+  including an update from 2.0.0.0 on 12.4.
+
 ## 2.0.0.0
 
 - **Requires Jellyfin 12.x** (built for .NET 10 against Jellyfin 12.0, `targetAbi` 12.0.0.0) and the Jellyfin 12 build of

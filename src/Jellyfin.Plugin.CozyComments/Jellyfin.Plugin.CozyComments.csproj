@@ -4,9 +4,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>Jellyfin.Plugin.CozyComments</RootNamespace>
     <AssemblyName>Jellyfin.Plugin.CozyComments</AssemblyName>
-    <Version>2.0.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.1.0</Version>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -16,7 +16,7 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
     <!-- Jellyfin 12.x (net10.0). Built against 12.0.0 so every 12.x server can load it (targetAbi 12.0.0.0).
          Override with -p:JellyfinVersion=12.N.0 to compile against a later 12.x release.
-         The Jellyfin 10.11 build is version 1.2.1.0 (main branch / git tag v1.2.1.0). -->
+         The Jellyfin 10.11 build is version 1.2.2.0 (jellyfin-10.11 branch / git tag v1.2.2.0). -->
     <JellyfinVersion Condition="'$(JellyfinVersion)' == ''">12.0.0</JellyfinVersion>
   </PropertyGroup>
 
@@ -25,7 +25,10 @@
     <PackageReference Include="Jellyfin.Controller" Version="$(JellyfinVersion)" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Jellyfin.Model" Version="$(JellyfinVersion)" ExcludeAssets="runtime" PrivateAssets="all" />
     <PackageReference Include="Jellyfin.Data" Version="$(JellyfinVersion)" ExcludeAssets="runtime" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.14" ExcludeAssets="runtime;native" PrivateAssets="all" />
+    <!-- Keep this at 10.0.0. The server supplies Microsoft.Data.Sqlite and .NET will not load a plugin that asks for a
+         newer version than the server has (Jellyfin 12.0-12.2 ship 10.0.11, 12.3 ships 10.0.12, 12.4 ships 10.0.14).
+         Asking for 10.0.0 works on every 12.x server. -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" ExcludeAssets="runtime;native" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" ExcludeAssets="runtime" PrivateAssets="all" />
   </ItemGroup>
 
